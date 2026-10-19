@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="وصلة QR: نصمم رمز QR بهوية محلك، رقمي أو مطبوع، لواتساب والتقييمات والقائمة والموقع.">
+<meta name="theme-color" content="#0F4A3E">
+<title>وصلة QR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+i[data-qr]{display:block}
+:root{
+--bg:#F1F4F0; --surface:#FBFCFA; --ink:#0B2924; --muted:#4A625C; --line:#D5DDD8;
+--pine:#0F4A3E; --on-pine:#F4F7F3;
+--brass:#8F6A24; --brass-fill:#C9A25A; --on-brass:#10241F;
+--btn:#0F4A3E; --on-btn:#F4F7F3;
+--stand:#0F4A3E; --stand-foot:#0A3329; --stand-ink:#F4F7F3;
+--glow:rgba(201,162,90,.30); --shadow:rgba(11,41,36,.42);
+--panel:#0B2924; --panel-ink:#EAF1EC; --panel-muted:#A9BEB6; --panel-field:rgba(255,255,255,.07); --panel-line:rgba(255,255,255,.22);
+--qr-ink:#0B2924; --qr-paper:#FFFFFF;
+--font-display:'El Messiri','IBM Plex Sans Arabic','Segoe UI',Tahoma,sans-serif;
+--font-body:'IBM Plex Sans Arabic','Segoe UI',Tahoma,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"]){
+--bg:#08201C; --surface:#0E2A25; --ink:#E9F0EB; --muted:#9FB6AE; --line:#1E3F38;
+--pine:#12382F; --on-pine:#E9F0EB;
+--brass:#D5AE62; --brass-fill:#D5AE62; --on-brass:#0A211D;
+--btn:#D5AE62; --on-btn:#0A211D;
+--stand:#12382F; --stand-foot:#0B2A23; --stand-ink:#E9F0EB;
+--glow:rgba(213,174,98,.20); --shadow:rgba(0,0,0,.7);
+--panel:#0F2F29;
+color-scheme:dark;
+}
+}
+:root[data-theme="dark"]{
+--bg:#08201C; --surface:#0E2A25; --ink:#E9F0EB; --muted:#9FB6AE; --line:#1E3F38;
+--pine:#12382F; --on-pine:#E9F0EB;
+--brass:#D5AE62; --brass-fill:#D5AE62; --on-brass:#0A211D;
+--btn:#D5AE62; --on-btn:#0A211D;
+--stand:#12382F; --stand-foot:#0B2A23; --stand-ink:#E9F0EB;
+--glow:rgba(213,174,98,.20); --shadow:rgba(0,0,0,.7);
+--panel:#0F2F29;
+color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.9;
+padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;text-wrap:balance;margin:0}
+p{margin:0}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:6px}
+.wrap{width:min(1160px,100%);margin-inline:auto}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg.i{width:1.25em;height:1.25em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.qr{display:block;width:100%;height:auto}
+.qr-bg{fill:var(--qr-paper)}
+.qr-fg{fill:var(--qr-ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:48px;padding:.55em 1.4em;border-radius:12px;border:1px solid transparent;
+background:var(--btn);color:var(--on-btn);font:600 1rem/1.4 var(--font-body);cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px -12px var(--shadow)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--brass)}
+.btn.brass{background:var(--brass-fill);color:var(--on-brass)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:22px}
+.brand{display:flex;align-items:center;gap:11px;font:700 1.45rem/1 var(--font-display)}
+.brand svg{width:38px;height:38px}
+.brand b{font-weight:700;color:var(--brass);margin-inline-start:.25em;font-family:var(--font-body);font-size:1.05rem;letter-spacing:.04em}
+.nav{display:flex;gap:28px;font-size:.96rem;color:var(--muted)}
+.nav a:hover{color:var(--ink)}
+.hero{display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center;padding-block:44px 84px}
+.hero h1{font-size:clamp(2.35rem,5.4vw,4.1rem);line-height:1.22}
+.hero .lead{margin-top:22px;max-width:34em;color:var(--muted);font-size:1.14rem}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.facts{display:flex;flex-wrap:wrap;gap:10px 26px;margin:34px 0 0;padding:0;list-style:none;font-size:.95rem;color:var(--muted)}
+.facts li{display:flex;align-items:center;gap:8px}
+.facts svg{color:var(--brass)}
+.art{position:relative;display:grid;justify-items:center;padding-block:18px 40px}
+.art::before{content:"";position:absolute;inset:6% 2% 14%;background:radial-gradient(closest-side,var(--glow),transparent 72%);z-index:0}
+.stand{position:relative;z-index:1;width:min(330px,100%);margin:0;padding:24px 24px 22px;background:var(--stand);color:var(--stand-ink);border-radius:22px;border-top:4px solid var(--brass-fill);
+box-shadow:0 40px 60px -30px var(--shadow),0 14px 24px -14px var(--shadow);rotate:-2.5deg;animation:rise .8s cubic-bezier(.2,.7,.2,1) both}
+.stand::after{content:"";position:absolute;inset-inline:10%;bottom:-16px;height:16px;background:var(--stand-foot);border-radius:0 0 12px 12px;z-index:-1}
+.stand-head{display:flex;justify-content:space-between;align-items:baseline;font:600 .95rem/1 var(--font-display);opacity:.92;margin-bottom:16px}
+.stand-head span:last-child{font-family:var(--font-body);font-size:.75rem;letter-spacing:.08em;color:var(--brass-fill)}
+.plate{background:var(--qr-paper);border-radius:14px;padding:12px}
+.stand-cta{margin-top:18px;font:700 1.6rem/1.2 var(--font-display);text-align:center}
+.stand-sub{margin-top:4px;text-align:center;font-size:.85rem;opacity:.75}
+.art figcaption{position:relative;z-index:1;margin-top:34px;font-size:.9rem;color:var(--muted);text-align:center;max-width:23em}
+@keyframes rise{from{translate:0 16px}to{translate:0 0}}
+section{padding-block:56px}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:16px 48px;align-items:end;margin-bottom:34px}
+.head h2{font-size:clamp(1.75rem,3.6vw,2.6rem);line-height:1.3}
+.head p{color:var(--muted);max-width:30em}
+.services{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.services li{display:grid;grid-template-columns:56px 1fr 210px;gap:8px 24px;align-items:center;padding-block:26px;border-bottom:1px solid var(--line)}
+.ico{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;border:1px solid var(--line);color:var(--brass);background:var(--surface)}
+.ico svg{width:24px;height:24px}
+.services h3{font-size:1.4rem;margin-bottom:2px}
+.services p{color:var(--muted);max-width:36em}
+.opens{font-size:.9rem;color:var(--muted);text-align:end}
+.opens b{display:block;font:600 .8rem/1.6 var(--font-body);color:var(--brass);letter-spacing:.04em}
+.samples{display:grid;grid-template-columns:1.05fr .9fr 1.15fr;gap:30px;align-items:end}
+.sample{margin:0;display:grid;gap:18px;justify-items:center}
+.sample figcaption{text-align:center;font-size:.93rem;color:var(--muted);max-width:19em}
+.sample figcaption b{display:block;color:var(--ink);font:600 1.15rem/1.5 var(--font-display)}
+.mini{background:var(--qr-paper);border-radius:10px;padding:7px}
+.tablecard{width:100%;max-width:290px;aspect-ratio:4/5;background:var(--stand);color:var(--stand-ink);border-radius:18px;border-top:4px solid var(--brass-fill);padding:22px;display:grid;grid-template-rows:auto 1fr auto;gap:12px;
+box-shadow:0 30px 40px -26px var(--shadow)}
+.tablecard .shop{font:700 1.5rem/1.2 var(--font-display)}
+.tablecard .shop small{display:block;font:500 .8rem/1.6 var(--font-body);color:var(--brass-fill);letter-spacing:.04em}
+.tablecard .mini{align-self:center;width:62%;justify-self:center}
+.tablecard .say{text-align:center;font-weight:600;font-size:.95rem}
+.sticker{width:100%;max-width:250px;aspect-ratio:1;border-radius:50%;background:var(--brass-fill);color:var(--on-brass);display:grid;place-content:center;justify-items:center;gap:8px;
+box-shadow:0 0 0 7px var(--bg),0 0 0 8px var(--brass-fill),0 28px 36px -24px var(--shadow)}
+.sticker .stars{display:flex;gap:3px}
+.sticker .stars svg{width:17px;height:17px;fill:currentColor;stroke:none}
+.sticker .mini{width:112px;padding:6px}
+.sticker .say{font:700 1.15rem/1.2 var(--font-display)}
+.bizcard{width:100%;max-width:380px;aspect-ratio:1.62;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;
+box-shadow:0 30px 36px -26px var(--shadow)}
+.bizcard .shop{font:700 1.45rem/1.2 var(--font-display)}
+.bizcard .shop small{display:block;margin-top:4px;font:400 .85rem/1.6 var(--font-body);color:var(--muted)}
+.bizcard .mini{width:96px;border:1px solid var(--line)}
+.bizcard .name{align-self:start;grid-column:1/-1;font-size:.75rem;letter-spacing:.06em;color:var(--brass);font-weight:600}
+.note{margin-top:30px;font-size:.88rem;color:var(--muted)}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.plan{display:flex;flex-direction:column;gap:14px;padding:30px 28px;border:1px solid var(--line);border-radius:22px;background:var(--surface)}
+.plan h3{font-size:1.4rem}
+.plan .about{color:var(--muted);font-size:.96rem}
+.price{display:flex;align-items:baseline;gap:8px;font:700 3rem/1.1 var(--font-display);font-variant-numeric:tabular-nums}
+.price small{font:500 1rem/1 var(--font-body);color:var(--muted)}
+.price em{font:500 1rem/1 var(--font-body);font-style:normal;color:var(--muted)}
+.plan ul{list-style:none;margin:2px 0 8px;padding:0;display:grid;gap:8px;font-size:.96rem}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li svg{color:var(--brass);margin-top:.4em;width:1.1em;height:1.1em}
+.plan .btn{margin-top:auto}
+.plan.hot{background:var(--pine);color:var(--on-pine);border-color:var(--brass-fill);position:relative;box-shadow:0 34px 50px -34px var(--shadow)}
+.plan.hot .about,.plan.hot .price small{color:var(--on-pine);opacity:.78}
+.plan.hot li svg{color:var(--brass-fill)}
+.plan.hot .btn{background:var(--brass-fill);color:var(--on-brass)}
+.badge{position:absolute;top:-13px;inset-inline-start:24px;background:var(--brass-fill);color:var(--on-brass);font:600 .82rem/1 var(--font-body);padding:8px 14px;border-radius:999px}
+.fine{margin-top:22px;font-size:.9rem;color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.steps li{position:relative;padding-top:34px;border-top:1px solid var(--line)}
+.steps .n{position:absolute;top:-17px;inset-inline-start:0;width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--brass);color:var(--brass);display:grid;place-items:center;font:700 1rem/1 var(--font-display);font-variant-numeric:tabular-nums}
+.steps h3{font-size:1.2rem;margin-bottom:4px}
+.steps p{color:var(--muted);font-size:.95rem}
+.order{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;background:var(--panel);color:var(--panel-ink);border-radius:28px;padding:44px;align-items:start}
+.order h2{font-size:clamp(1.8rem,3.4vw,2.5rem);line-height:1.3}
+.order .sub{margin-top:12px;color:var(--panel-muted);max-width:26em}
+.preview{margin-top:28px;display:flex;gap:18px;align-items:center}
+.preview .plate{width:140px;flex:none;padding:8px}
+.preview p{font-size:.9rem;color:var(--panel-muted);max-width:15em}
+.preview p b{display:block;color:var(--panel-ink);font-weight:600}
+.direct{margin-top:26px;padding-top:20px;border-top:1px solid var(--panel-line);display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:.95rem;color:var(--panel-muted)}
+.num{direction:ltr;unicode-bidi:isolate;font:600 1.15rem/1 var(--font-body);letter-spacing:.06em;color:var(--panel-ink);user-select:all}
+.copy{background:transparent;border:1px solid var(--panel-line);color:var(--panel-ink);border-radius:8px;padding:6px 12px;font:500 .85rem/1.4 var(--font-body);cursor:pointer}
+.copy:hover{border-color:var(--brass-fill)}
+form{display:grid;gap:16px}
+label{display:block;font-size:.92rem;margin-bottom:6px;color:var(--panel-ink);font-weight:500}
+input,select,textarea{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--panel-line);background:var(--panel-field);color:var(--panel-ink);font:400 1rem/1.5 var(--font-body)}
+input::placeholder,textarea::placeholder{color:var(--panel-muted);opacity:.8}
+select option{color:#0B2924;background:#fff}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--brass-fill);outline-offset:2px}
+.ltr{direction:ltr;text-align:left}
+.send{width:100%;min-height:54px;font-size:1.05rem}
+.hint{font-size:.85rem;color:var(--panel-muted)}
+.ok{display:none;font-size:.9rem;color:var(--brass-fill)}
+footer{padding-block:44px 52px;margin-top:20px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;border-top:1px solid var(--line);padding-top:22px;font-size:.88rem;color:var(--muted)}
+@media (max-width:900px){
+.hero{grid-template-columns:1fr;gap:34px;padding-block:28px 56px}
+.head{grid-template-columns:1fr}
+.samples{grid-template-columns:1fr;gap:44px}
+.plans{grid-template-columns:1fr}
+.steps{grid-template-columns:repeat(2,1fr);row-gap:40px}
+.order{grid-template-columns:1fr;padding:30px 22px;gap:32px}
+.nav{display:none}
+}
+@media (max-width:640px){
+body{font-size:16px}
+section{padding-block:40px}
+.services li{grid-template-columns:48px 1fr;gap:4px 16px}
+.services .opens{grid-column:2;text-align:start}
+.ico{width:46px;height:46px}
+.steps{grid-template-columns:1fr}
+.preview{flex-direction:column;align-items:flex-start}
+.btn{width:100%}
+.cta .btn{flex:1 1 100%}
+.top .btn{width:auto;min-height:42px;padding-inline:1em}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+.stand{animation:none}
+.btn{transition:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16v11H10l-4.5 3.5v-3.5H4z"/><path d="M8 10h8M8 13h5"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M6 3.5h12v17H6z"/><path d="M9 8h6M9 12h6M9 16h3.5"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+</svg>
+<div class="wrap">
+<header class="top">
+<a class="brand" href="#top" aria-label="وصلة QR، أعلى الصفحة">
+<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--pine)"/><rect x="6.5" y="6.5" width="9" height="9" rx="2" fill="none" stroke="#F4F7F3" stroke-width="2"/><rect x="9.5" y="9.5" width="3" height="3" fill="#F4F7F3"/><rect x="19" y="7" width="3.2" height="3.2" fill="#F4F7F3"/><rect x="23" y="11" width="3.2" height="3.2" fill="#F4F7F3"/><rect x="7" y="19" width="3.2" height="3.2" fill="#F4F7F3"/><rect x="18.5" y="18.5" width="7.5" height="7.5" rx="1.6" fill="#C9A25A"/></svg>
+<span>وصلة<b>QR</b></span>
+</a>
+<nav class="nav" aria-label="التنقل الرئيسي"><a href="#services">الخدمات</a><a href="#samples">نماذج</a><a href="#prices">الأسعار</a><a href="#how">طريقة الطلب</a></nav>
+<a class="btn" href="#order">اطلب الآن</a>
+</header>
+</div>
+<main id="top" class="wrap">
+<section class="hero" style="padding-top:44px">
+<div>
+<h1>وصلة بين محلّك وزبونك، بمسحة وحدة.</h1>
+<p class="lead">نصمم رمز QR بهوية محلّك، ويفتح واتساب أو التقييمات أو القائمة أو موقعك. تستلمه ملفات جاهزة للشاشة والطباعة، أو مطبوعًا ومجهزًا للتركيب.</p>
+<div class="cta">
+<a class="btn" href="#order"><svg class="i"><use href="#i-chat"/></svg>اطلب تصميمك</a>
+<a class="btn ghost" href="#samples">شاهد النماذج</a>
+</div>
+<ul class="facts">
+<li><svg class="i"><use href="#i-check"/></svg>معاينة قبل الاعتماد</li>
+<li><svg class="i"><use href="#i-check"/></svg>ملفات PNG وPDF للطباعة</li>
+<li><svg class="i"><use href="#i-check"/></svg>السعر يتأكد قبل البدء</li>
+</ul>
+</div>
+<figure class="art" style="margin:0">
+<div class="stand">
+<div class="stand-head"><span>وصلة</span><span>QR</span></div>
+<div class="plate"><i data-qr="https://wa.me/966539904191" data-l="رمز QR يفتح محادثة واتساب وصلة"></i></div>
+<p class="stand-cta">امسح وابدأ طلبك</p>
+<p class="stand-sub">يفتح محادثة واتساب معنا</p>
+</div>
+<figcaption>هذا رمز حقيقي، وجّه كاميرا جوالك عليه وجرّب.</figcaption>
+</figure>
+</section>
+<section id="services">
+<div class="head">
+<h2>وش تبي يفتح الرمز؟</h2>
+<p>نختار معك الوجهة، ونصمم الرمز على حسب مكانه: طاولة، واجهة، فاتورة أو بطاقة.</p>
+</div>
+<ul class="services">
+<li>
+<span class="ico"><svg class="i"><use href="#i-chat"/></svg></span>
+<div><h3>QR واتساب</h3><p>يفتح محادثة مباشرة مع رقم المحل، ويقدر يجي برسالة مكتوبة مسبقًا للطلب أو الحجز.</p></div>
+<div class="opens"><b>يفتح</b>محادثة واتساب الأعمال</div>
+</li>
+<li>
+<span class="ico"><svg class="i"><use href="#i-star"/></svg></span>
+<div><h3>QR التقييمات</h3><p>يوصل الزبون لصفحة تقييم محلّك الرسمية على Google، ويسهّل عليه كتابة رأيه.</p></div>
+<div class="opens"><b>يفتح</b>صفحة التقييم في Google</div>
+</li>
+<li>
+<span class="ico"><svg class="i"><use href="#i-menu"/></svg></span>
+<div><h3>QR القائمة والكتالوج</h3><p>للمطاعم والكافيهات والمحلات: قائمتك أو منتجاتك تظهر على جوال الزبون بدون ورق مطبوع.</p></div>
+<div class="opens"><b>يفتح</b>رابط القائمة أو ملف PDF</div>
+</li>
+<li>
+<span class="ico"><svg class="i"><use href="#i-globe"/></svg></span>
+<div><h3>QR الموقع والحسابات</h3><p>يجمع الزبون مع موقعك أو حسابك في إنستغرام أو سناب أو تيك توك بمسحة وحدة.</p></div>
+<div class="opens"><b>يفتح</b>موقعك أو صفحة روابطك</div>
+</li>
+</ul>
+</section>
+<section id="samples">
+<div class="head">
+<h2>كيف يبان في محلّك</h2>
+<p>ثلاثة نماذج بأسماء افتراضية. الرموز حقيقية، وتفتح محادثة واتساب معنا لو مسحتها.</p>
+</div>
+<div class="samples">
+<figure class="sample">
+<div class="tablecard">
+<div class="shop"><small>القائمة</small>مقهى الساحة</div>
+<div class="mini"><i data-qr="https://wa.me/966539904191?text=%D9%85%D9%86%D9%8A%D9%88" data-l="رمز QR تجريبي للقائمة"></i></div>
+<div class="say">امسح لعرض القائمة</div>
+</div>
+<figcaption><b>ستاند الطاولة</b>للمطاعم والكافيهات، يوصل الزبون لقائمتك.</figcaption>
+</figure>
+<figure class="sample">
+<div class="sticker">
+<div class="stars" aria-hidden="true"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div>
+<div class="mini"><i data-qr="https://wa.me/966539904191?text=%D8%AA%D9%82%D9%8A%D9%8A%D9%85" data-l="رمز QR تجريبي للتقييم"></i></div>
+<div class="say">قيّم تجربتك</div>
+</div>
+<figcaption><b>ستيكر الواجهة</b>على الزجاج أو الكاونتر، يجيب لك تقييمات Google.</figcaption>
+</figure>
+<figure class="sample">
+<div class="bizcard">
+<div class="name">صالون لمسة</div>
+<div class="shop">احجز موعدك<small>بمسحة وحدة من البطاقة</small></div>
+<div class="mini"><i data-qr="https://wa.me/966539904191?text=%D8%AD%D8%AC%D8%B2" data-l="رمز QR تجريبي للحجز"></i></div>
+</div>
+<figcaption><b>بطاقة الأعمال</b>تحفظ رابط الحجز أو الحساب مع كل بطاقة توزعها.</figcaption>
+</figure>
+</div>
+<p class="note">التصميم النهائي يتبع ألوان وشعار محلّك، والنماذج هنا للتوضيح فقط.</p>
+</section>
+<section id="prices">
+<div class="head">
+<h2>أسعار واضحة</h2>
+<p>أسعار إطلاق مقترحة. الطباعة والتوصيل يتأكد سعرهما قبل ما نعتمد الطلب.</p>
+</div>
+<div class="plans">
+<article class="plan">
+<h3>QR رقمي</h3>
+<p class="about">للي يبي رمز نظيف يستخدمه على الشاشة أو يطبعه بنفسه.</p>
+<div class="price">29 <small>ريال</small></div>
+<ul>
+<li><svg class="i"><use href="#i-check"/></svg>تصميم أساسي نظيف</li>
+<li><svg class="i"><use href="#i-check"/></svg>ملف PNG وملف PDF جاهز للطباعة</li>
+<li><svg class="i"><use href="#i-check"/></svg>رابط واحد</li>
+</ul>
+<a class="btn ghost" href="#order" data-package="QR رقمي">اختر الباقة</a>
+</article>
+<article class="plan hot">
+<span class="badge">الأكثر مرونة</span>
+<h3>QR بتصميم مخصص</h3>
+<p class="about">رمز بهوية محلّك، يليق على طاولاتك وواجهتك.</p>
+<div class="price">49 <small>ريال</small></div>
+<ul>
+<li><svg class="i"><use href="#i-check"/></svg>ألوان وشعار المحل</li>
+<li><svg class="i"><use href="#i-check"/></svg>ملفات رقمية عالية الدقة</li>
+<li><svg class="i"><use href="#i-check"/></svg>معاينة قبل الاعتماد</li>
+</ul>
+<a class="btn" href="#order" data-package="QR بتصميم مخصص">اختر الباقة</a>
+</article>
+<article class="plan">
+<h3>QR مطبوع</h3>
+<p class="about">تصميم مخصص ومطبوع، جاهز تركّبه وتبدأ.</p>
+<div class="price"><em>من</em> 99 <small>ريال</small></div>
+<ul>
+<li><svg class="i"><use href="#i-check"/></svg>التصميم المخصص كاملًا</li>
+<li><svg class="i"><use href="#i-check"/></svg>طباعة بالحجم والخامة المتفق عليها</li>
+<li><svg class="i"><use href="#i-check"/></svg>سعر التوصيل يتأكد قبل الاعتماد</li>
+</ul>
+<a class="btn ghost" href="#order" data-package="QR مطبوع">اطلب عرض سعر</a>
+</article>
+</div>
+</section>
+<section id="how">
+<div class="head">
+<h2>من الطلب إلى التسليم</h2>
+<p>أربع خطوات، وتشوف شغلك قبل ما تدفع على الطباعة.</p>
+</div>
+<ol class="steps">
+<li><span class="n">1</span><h3>أرسل التفاصيل</h3><p>اسم المحل، الرابط المطلوب، والشعار إن وجد.</p></li>
+<li><span class="n">2</span><h3>راجع المعاينة</h3><p>نرسل لك التصميم لتعدّل عليه قبل الاعتماد.</p></li>
+<li><span class="n">3</span><h3>اعتمد الطلب</h3><p>نؤكد السعر والمدة والتكلفة النهائية.</p></li>
+<li><span class="n">4</span><h3>استلم رمزك</h3><p>ملفات رقمية، أو منتج مطبوع حسب طلبك.</p></li>
+</ol>
+</section>
+<section id="order">
+<div class="order">
+<div>
+<h2>جهّز طلبك في دقيقة</h2>
+<p class="sub">عبّ البيانات، وبنفتح لك واتساب برسالة جاهزة تنرسل لنا. لا ترسل لنا بيانات حساسة، يكفي النشاط والرابط.</p>
+<div class="preview">
+<div class="plate" id="pvBox"><i data-qr="https://wa.me/966539904191" data-l="رمز QR توضيحي"></i></div>
+<p><b id="pvTitle">مثال على الرمز</b><span id="pvText">اكتب الرابط في النموذج وبيتحول الرمز لرابطك مباشرة. الشكل النهائي يتصمم بهوية محلّك.</span></p>
+</div>
+<div class="direct">
+<span>أو راسلنا مباشرة على واتساب:</span>
+<span class="num" id="phone">0539904191</span>
+<button class="copy" type="button" id="copyBtn">نسخ الرقم</button>
+</div>
+</div>
+<form id="orderForm" novalidate>
+<div><label for="customer">اسمك أو اسم المحل</label><input id="customer" name="customer" required autocomplete="organization" placeholder="مثال: مقهى الساحة"></div>
+<div><label for="service">الخدمة المطلوبة</label>
+<select id="service" name="service">
+<option>QR رقمي</option><option>QR بتصميم مخصص</option><option>QR مطبوع</option><option>أحتاج استشارة لاختيار الخدمة</option>
+</select></div>
+<div><label for="destination">الرابط اللي تبي يفتحه الرمز</label><input class="ltr" id="destination" name="destination" type="url" inputmode="url" required placeholder="https://" dir="ltr"></div>
+<div><label for="details">ملاحظات (اختياري)</label><textarea id="details" name="details" rows="3" placeholder="الشعار، اللون المفضل، حجم الطباعة..."></textarea></div>
+<a class="btn brass send" id="send" href="#order" target="_blank" rel="noopener"><svg class="i"><use href="#i-chat"/></svg>افتح واتساب وأرسل الطلب</a>
+<p class="ok" id="msg" role="status"></p>
+<p class="hint">الزر يفتح واتساب برسالة مكتوبة، وأنت تضغط إرسال بنفسك.</p>
+</form>
+</div>
+</section>
+</main>
+<footer class="wrap">
+<div class="foot"><span>© <span id="year">2026</span> وصلة QR</span><span>حلول QR للمحلات والأعمال</span><span>الأسعار مبدئية وتتأكد بعد تفاصيل الطلب.</span></div>
+</footer>
+<script>
+function qrEncode(text) {
+var ECC = [-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24];
+var BLK = [-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10];
+var MAXV = 15;
+var bytes = Array.prototype.slice.call(new TextEncoder().encode(text));
+function rawModules(v) {
+var r = (16 * v + 128) * v + 64;
+if (v >= 2) { var n = Math.floor(v / 7) + 2; r -= (25 * n - 10) * n - 55; if (v >= 7) r -= 36; }
+return r;
+}
+function dataCodewords(v) { return Math.floor(rawModules(v) / 8) - ECC[v] * BLK[v]; }
+var ver = 0;
+for (var v = 1; v <= MAXV; v++) {
+var cc = v < 10 ? 8 : 16;
+if (4 + cc + 8 * bytes.length <= dataCodewords(v) * 8) { ver = v; break; }
+}
+if (!ver) return null;
+var bits = [];
+function put(val, len) { for (var i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); }
+put(4, 4);
+put(bytes.length, ver < 10 ? 8 : 16);
+bytes.forEach(function (b) { put(b, 8); });
+var cap = dataCodewords(ver) * 8;
+put(0, Math.min(4, cap - bits.length));
+while (bits.length % 8) bits.push(0);
+for (var pad = 0xEC; bits.length < cap; pad ^= 0xEC ^ 0x11) put(pad, 8);
+var data = [];
+for (var i = 0; i < bits.length; i += 8) {
+var byte = 0; for (var k = 0; k < 8; k++) byte = (byte << 1) | bits[i + k];
+data.push(byte);
+}
+function mul(x, y) {
+var z = 0;
+for (var i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; }
+return z;
+}
+function divisor(d) {
+var res = []; for (var i = 0; i < d; i++) res.push(0);
+res[d - 1] = 1;
+var root = 1;
+for (var i2 = 0; i2 < d; i2++) {
+for (var j = 0; j < d; j++) { res[j] = mul(res[j], root); if (j + 1 < d) res[j] ^= res[j + 1]; }
+root = mul(root, 2);
+}
+return res;
+}
+function remainder(dat, div) {
+var res = div.map(function () { return 0; });
+dat.forEach(function (b) {
+var f = b ^ res.shift(); res.push(0);
+div.forEach(function (c, i) { res[i] ^= mul(c, f); });
+});
+return res;
+}
+var nb = BLK[ver], eccLen = ECC[ver];
+var raw = Math.floor(rawModules(ver) / 8);
+var nShort = nb - raw % nb, shortLen = Math.floor(raw / nb);
+var div = divisor(eccLen), blocks = [], k2 = 0;
+for (var b = 0; b < nb; b++) {
+var dl = shortLen - eccLen + (b < nShort ? 0 : 1);
+var dat = data.slice(k2, k2 + dl); k2 += dl;
+var ecc = remainder(dat, div);
+if (b < nShort) dat.push(0);
+blocks.push(dat.concat(ecc));
+}
+var all = [];
+for (var x = 0; x < blocks[0].length; x++) {
+blocks.forEach(function (blk, j) { if (x !== shortLen - eccLen || j >= nShort) all.push(blk[x]); });
+}
+var size = ver * 4 + 17, mods = [], fn = [];
+for (var r = 0; r < size; r++) { mods.push([]); fn.push([]); for (var c = 0; c < size; c++) { mods[r].push(false); fn[r].push(false); } }
+function set(xx, yy, dark) { mods[yy][xx] = dark; fn[yy][xx] = true; }
+for (var t = 0; t < size; t++) { set(6, t, t % 2 === 0); set(t, 6, t % 2 === 0); }
+function finder(cx, cy) {
+for (var dy = -4; dy <= 4; dy++) for (var dx = -4; dx <= 4; dx++) {
+var dist = Math.max(Math.abs(dx), Math.abs(dy)), xx = cx + dx, yy = cy + dy;
+if (xx >= 0 && xx < size && yy >= 0 && yy < size) set(xx, yy, dist !== 2 && dist !== 4);
+}
+}
+finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+var al = [];
+if (ver > 1) {
+var n = Math.floor(ver / 7) + 2;
+var step = Math.ceil((ver * 4 + 4) / (n * 2 - 2)) * 2;
+al = [6];
+for (var pos = size - 7; al.length < n; pos -= step) al.splice(1, 0, pos);
+}
+al.forEach(function (ax, i) { al.forEach(function (ay, j) {
+if ((i === 0 && j === 0) || (i === 0 && j === al.length - 1) || (i === al.length - 1 && j === 0)) return;
+for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++) set(ax + dx, ay + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+}); });
+function formatBits(mask) {
+var d = (0 << 3) | mask, rem = d;
+for (var i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+var bs = ((d << 10) | rem) ^ 0x5412;
+function bit(i) { return ((bs >>> i) & 1) !== 0; }
+for (var i2 = 0; i2 <= 5; i2++) set(8, i2, bit(i2));
+set(8, 7, bit(6)); set(8, 8, bit(7)); set(7, 8, bit(8));
+for (var i3 = 9; i3 < 15; i3++) set(14 - i3, 8, bit(i3));
+for (var i4 = 0; i4 < 8; i4++) set(size - 1 - i4, 8, bit(i4));
+for (var i5 = 8; i5 < 15; i5++) set(8, size - 15 + i5, bit(i5));
+set(8, size - 8, true);
+}
+formatBits(0);
+if (ver >= 7) {
+var rem = ver;
+for (var q = 0; q < 12; q++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25);
+var vb = (ver << 12) | rem;
+for (var q2 = 0; q2 < 18; q2++) {
+var col = ((vb >>> q2) & 1) !== 0, a = size - 11 + q2 % 3, bb = Math.floor(q2 / 3);
+set(a, bb, col); set(bb, a, col);
+}
+}
+var idx = 0;
+for (var right = size - 1; right >= 1; right -= 2) {
+if (right === 6) right = 5;
+for (var vert = 0; vert < size; vert++) for (var jj = 0; jj < 2; jj++) {
+var xx2 = right - jj, up = ((right + 1) & 2) === 0, yy2 = up ? size - 1 - vert : vert;
+if (!fn[yy2][xx2] && idx < all.length * 8) {
+mods[yy2][xx2] = ((all[idx >>> 3] >>> (7 - (idx & 7))) & 1) !== 0; idx++;
+}
+}
+}
+function applyMask(m) {
+for (var yy = 0; yy < size; yy++) for (var xx = 0; xx < size; xx++) {
+var inv;
+switch (m) {
+case 0: inv = (xx + yy) % 2 === 0; break;
+case 1: inv = yy % 2 === 0; break;
+case 2: inv = xx % 3 === 0; break;
+case 3: inv = (xx + yy) % 3 === 0; break;
+case 4: inv = (Math.floor(xx / 3) + Math.floor(yy / 2)) % 2 === 0; break;
+case 5: inv = xx * yy % 2 + xx * yy % 3 === 0; break;
+case 6: inv = (xx * yy % 2 + xx * yy % 3) % 2 === 0; break;
+default: inv = ((xx + yy) % 2 + xx * yy % 3) % 2 === 0;
+}
+if (!fn[yy][xx] && inv) mods[yy][xx] = !mods[yy][xx];
+}
+}
+function penalty() {
+var p = 0, y, x, i;
+function lines(get) {
+for (var a = 0; a < size; a++) {
+var run = 1, line = [];
+for (var b = 0; b < size; b++) line.push(get(a, b));
+for (var c = 1; c < size; c++) {
+if (line[c] === line[c - 1]) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else run = 1;
+}
+var s = line.map(function (v2) { return v2 ? 1 : 0; }).join('');
+var m1 = s.match(/10111010000|00001011101/g); if (m1) p += 40 * m1.length;
+}
+}
+lines(function (a, b) { return mods[a][b]; });
+lines(function (a, b) { return mods[b][a]; });
+for (y = 0; y < size - 1; y++) for (x = 0; x < size - 1; x++) {
+var c0 = mods[y][x];
+if (c0 === mods[y][x + 1] && c0 === mods[y + 1][x] && c0 === mods[y + 1][x + 1]) p += 3;
+}
+var dark = 0; mods.forEach(function (row) { row.forEach(function (v3) { if (v3) dark++; }); });
+var tot = size * size;
+p += (Math.ceil(Math.abs(dark * 20 - tot * 10) / tot) - 1) * 10;
+return p;
+}
+var best = 0, bestP = Infinity;
+for (var m = 0; m < 8; m++) {
+applyMask(m); formatBits(m);
+var pp = penalty();
+if (pp < bestP) { bestP = pp; best = m; }
+applyMask(m);
+}
+applyMask(best); formatBits(best);
+return { size: size, version: ver, modules: mods };
+}
+function qrSvg(text, label) {
+var q = qrEncode(text);
+if (!q) return '';
+var d = [];
+for (var y = 0; y < q.size; y++) {
+var x = 0;
+while (x < q.size) {
+if (q.modules[y][x]) { var s = x; while (x < q.size && q.modules[y][x]) x++; d.push('M' + s + ' ' + y + 'h' + (x - s) + 'v1h-' + (x - s) + 'z'); }
+else x++;
+}
+}
+return '<svg class="qr" viewBox="-2 -2 ' + (q.size + 4) + ' ' + (q.size + 4) + '" shape-rendering="crispEdges" role="img" aria-label="' + (label || 'رمز QR') + '"><rect class="qr-bg" x="-2" y="-2" width="' + (q.size + 4) + '" height="' + (q.size + 4) + '"/><path class="qr-fg" d="' + d.join('') + '"/></svg>';
+}
+document.querySelectorAll('[data-qr]').forEach(function(e){e.innerHTML=qrSvg(e.getAttribute('data-qr'),e.getAttribute('data-l'))});
+(function(){
+var PHONE='966539904191';
+var $=function(id){return document.getElementById(id)};
+try{$('year').textContent=new Date().getFullYear()}catch(e){}
+document.querySelectorAll('[data-package]').forEach(function(a){
+a.addEventListener('click',function(){ $('service').value=a.getAttribute('data-package'); update(); });
+});
+function message(){
+var d=function(id){return $(id).value.trim()};
+return 'السلام عليكم، أبغى أطلب خدمة QR.\n'
++'اسم المحل: '+(d('customer')||'—')+'\n'
++'الخدمة: '+$('service').value+'\n'
++'الرابط: '+(d('destination')||'—')+'\n'
++'ملاحظات: '+(d('details')||'لا يوجد');
+}
+function validUrl(v){ try{ var u=new URL(v); return u.protocol==='https:'||u.protocol==='http:'; }catch(e){ return false; } }
+var pvBox=$('pvBox'), pvTitle=$('pvTitle'), pvText=$('pvText'), lastUrl='';
+var pvDefault={title:pvTitle.textContent,text:pvText.textContent,html:pvBox.innerHTML};
+function preview(){
+var v=$('destination').value.trim();
+if(v===lastUrl) return; lastUrl=v;
+if(v && validUrl(v)){
+var svg=''; try{ svg=qrSvg(v,'معاينة رمز QR للرابط'); }catch(e){}
+if(svg){ pvBox.innerHTML=svg; pvTitle.textContent='معاينة رمزك'; pvText.textContent='هذا الرمز يفتح الرابط اللي كتبته. التصميم النهائي ببقى بهوية محلّك.'; return; }
+pvBox.innerHTML=pvDefault.html; pvTitle.textContent='الرابط طويل'; pvText.textContent='ما قدرنا نعرض معاينة لهذا الرابط، لكن نجهز لك الرمز عادي.'; return;
+}
+pvBox.innerHTML=pvDefault.html; pvTitle.textContent=pvDefault.title; pvText.textContent=pvDefault.text;
+}
+function update(){
+$('send').href='https://wa.me/'+PHONE+'?text='+encodeURIComponent(message());
+preview();
+}
+['customer','service','destination','details'].forEach(function(id){ $(id).addEventListener('input',update); $(id).addEventListener('change',update); });
+update();
+$('send').addEventListener('click',function(e){
+var f=$('orderForm'), m=$('msg');
+var bad=!$('customer').value.trim() ? 'customer' : (!validUrl($('destination').value.trim()) ? 'destination' : '');
+if(bad){
+e.preventDefault();
+m.style.display='block';
+m.textContent= bad==='customer' ? 'اكتب اسمك أو اسم المحل أول.' : 'اكتب الرابط كامل، يبدأ بـ https://';
+$(bad).focus();
+return;
+}
+update();
+m.style.display='block';
+m.textContent='إذا ما انفتح واتساب، انسخ الرقم وراسلنا مباشرة.';
+});
+$('copyBtn').addEventListener('click',function(){
+var el=$('phone'), btn=this;
+function done(){ btn.textContent='تم النسخ'; setTimeout(function(){btn.textContent='نسخ الرقم'},1800); }
+function fallback(){ var r=document.createRange(); r.selectNodeContents(el); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText('0539904191').then(done,fallback);
+} else fallback();
+});
+})();
+</script>
+</body>
+</html>
